@@ -138,36 +138,84 @@ fun RegistrationScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+//                // Date of Birth (Clickable date picker)
+//                Column {
+//                    OutlinedTextField(
+//                        value = uiState.dateOfBirth?.let { DateUtils.formatForDisplay(it) } ?: "",
+//                        onValueChange = { },
+//                        label = { Text("Date of Birth *") },
+//                        leadingIcon = {
+//                            Icon(Icons.Default.Add, contentDescription = null)
+//                        },
+//                        trailingIcon = {
+//                            Icon(Icons.Default.DateRange, contentDescription = "Select date")
+//                        },
+//                        readOnly = true,
+//                        isError = uiState.dateOfBirthError != null,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clickable {
+//                                showDatePicker(
+//                                    context = context,
+//                                    initialDate = uiState.dateOfBirth ?: Date(),
+//                                    onDateSelected = viewModel::onDateOfBirthChange
+//                                )
+//                            },
+//                        placeholder = { Text("Tap to select date of birth") },
+//                        colors = OutlinedTextFieldDefaults.colors(
+//                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+//                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+//                        ),
+//                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+//                    )
+//
+//                    if (uiState.dateOfBirthError != null) {
+//                        Text(
+//                            text = uiState.dateOfBirthError!!,
+//                            color = MaterialTheme.colorScheme.error,
+//                            style = MaterialTheme.typography.bodySmall,
+//                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+//                        )
+//                    }
+//                }
+
                 // Date of Birth (Clickable date picker)
                 Column {
-                    OutlinedTextField(
-                        value = uiState.dateOfBirth?.let { DateUtils.formatForDisplay(it) } ?: "",
-                        onValueChange = { },
-                        label = { Text("Date of Birth *") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                        },
-                        trailingIcon = {
-                            Icon(Icons.Default.DateRange, contentDescription = "Select date")
-                        },
-                        readOnly = true,
-                        isError = uiState.dateOfBirthError != null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                showDatePicker(
-                                    context = context,
-                                    initialDate = uiState.dateOfBirth ?: Date(),
-                                    onDateSelected = viewModel::onDateOfBirthChange
-                                )
+                    Box {
+                        OutlinedTextField(
+                            value = uiState.dateOfBirth?.let { DateUtils.formatForDisplay(it) } ?: "",
+                            onValueChange = { },
+                            label = { Text("Date of Birth *") },
+                            leadingIcon = {
+                                Icon(Icons.Default.Add, contentDescription = null)
                             },
-                        placeholder = { Text("Tap to select date of birth") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                        ),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
-                    )
+                            trailingIcon = {
+                                Icon(Icons.Default.DateRange, contentDescription = "Select date")
+                            },
+                            readOnly = true,
+                            isError = uiState.dateOfBirthError != null,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Tap to select date of birth") },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                            ),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                        )
+
+                        // Invisible clickable overlay that captures all touch events
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable {
+                                    showDatePicker(
+                                        context = context,
+                                        initialDate = uiState.dateOfBirth ?: Date(),
+                                        onDateSelected = viewModel::onDateOfBirthChange
+                                    )
+                                }
+                        )
+                    }
 
                     if (uiState.dateOfBirthError != null) {
                         Text(

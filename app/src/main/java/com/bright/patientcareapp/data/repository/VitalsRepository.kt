@@ -79,4 +79,16 @@ class VitalsRepository @Inject constructor(
         val heightM = heightCm / 100.0
         return weightKg / (heightM * heightM)
     }
+
+    /**
+     * Get patients with visits on a specific date
+     * Used for date filtering in patient listing
+     */
+    suspend fun getPatientsWithVisitsOnDate(date: Long): List<String> {
+        return try {
+            vitalsDao.getPatientsWithVisitsOnDate(date)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }

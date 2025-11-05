@@ -19,4 +19,7 @@ interface VitalsDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM vitals WHERE patientId = :patientId AND visitDate = :visitDate)")
     suspend fun vitalsExistsForDate(patientId: String, visitDate: Date): Boolean
+
+    @Query("SELECT DISTINCT patientId FROM vitals WHERE DATE(visitDate/1000, 'unixepoch') = DATE(:timestamp/1000, 'unixepoch')")
+    suspend fun getPatientsWithVisitsOnDate(timestamp: Long): List<String>
 }
