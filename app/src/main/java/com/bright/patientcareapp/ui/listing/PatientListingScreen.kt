@@ -50,6 +50,136 @@ fun PatientListingScreen(
         )
 
         // Filter and Actions Card
+//        HealthCard {
+//            Column(
+//                verticalArrangement = Arrangement.spacedBy(16.dp)
+//            ) {
+//                // Filter Section Title
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Icon(
+////                        Icons.Default.FilterList,
+//                        Icons.Default.Search,
+//                        contentDescription = null,
+//                        tint = MaterialTheme.colorScheme.primary,
+//                        modifier = Modifier.padding(end = 12.dp)
+//                    )
+//                    Text(
+//                        text = "Filter & Actions",
+//                        style = MaterialTheme.typography.titleMedium,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = MaterialTheme.colorScheme.primary
+//                    )
+//                }
+//
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    // Date Filter
+//                    OutlinedTextField(
+//                        value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) } ?: "",
+//                        onValueChange = { },
+//                        label = { Text("Filter by Visit Date") },
+//                        leadingIcon = {
+//                            Icon(Icons.Default.DateRange, contentDescription = null)
+//                        },
+//                        trailingIcon = {
+//                            Row {
+//                                if (uiState.filterDate != null) {
+//                                    IconButton(onClick = viewModel::clearDateFilter) {
+//                                        Icon(
+//                                            Icons.Default.Clear,
+//                                            contentDescription = "Clear filter",
+//                                            modifier = Modifier.size(20.dp)
+//                                        )
+//                                    }
+//                                }
+//                                Icon(
+//                                    Icons.Default.KeyboardArrowDown,
+//                                    contentDescription = "Select date"
+//                                )
+//                            }
+//                        },
+//                        readOnly = true,
+//                        modifier = Modifier
+//                            .weight(1f)
+//                            .clickable {
+//                                showDatePicker(
+//                                    context = context,
+//                                    initialDate = uiState.filterDate ?: Date(),
+//                                    onDateSelected = viewModel::onDateFilterChange
+//                                )
+//                            },
+//                        placeholder = { Text("Tap to filter by date") },
+//                        colors = OutlinedTextFieldDefaults.colors(
+//                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+//                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+//                        ),
+//                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+//                        singleLine = true
+//                    )
+//
+//                    // Add Patient Button
+//                    Button(
+//                        onClick = onNavigateToRegistration,
+//                        modifier = Modifier.height(56.dp),
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = MaterialTheme.colorScheme.secondary,
+//                            contentColor = MaterialTheme.colorScheme.onSecondary
+//                        ),
+//                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+//                    ) {
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                        ) {
+//                            Icon(
+////                                Icons.Default.PersonAdd,
+//                                Icons.Default.Add,
+//                                contentDescription = null,
+//                                modifier = Modifier.size(18.dp)
+//                            )
+//                            Text(
+//                                text = "Add Patient",
+//                                style = MaterialTheme.typography.labelMedium,
+//                                fontWeight = FontWeight.SemiBold
+//                            )
+//                        }
+//                    }
+//                }
+//
+//                // Filter Results Summary
+//                if (uiState.filterDate != null) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .background(
+//                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+//                                androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+//                            )
+//                            .padding(12.dp)
+//                    ) {
+//                        Icon(
+//                            Icons.Default.Info,
+//                            contentDescription = null,
+//                            tint = MaterialTheme.colorScheme.primary,
+//                            modifier = Modifier.padding(end = 8.dp).size(16.dp)
+//                        )
+//                        Text(
+//                            text = "Showing patients with visits on ${DateUtils.formatForDisplay(uiState.filterDate!!)}",
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+
         HealthCard {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -60,7 +190,6 @@ fun PatientListingScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-//                        Icons.Default.FilterList,
                         Icons.Default.Search,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
@@ -79,49 +208,58 @@ fun PatientListingScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Date Filter
-                    OutlinedTextField(
-                        value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) } ?: "",
-                        onValueChange = { },
-                        label = { Text("Filter by Visit Date") },
-                        leadingIcon = {
-                            Icon(Icons.Default.DateRange, contentDescription = null)
-                        },
-                        trailingIcon = {
-                            Row {
-                                if (uiState.filterDate != null) {
-                                    IconButton(onClick = viewModel::clearDateFilter) {
-                                        Icon(
-                                            Icons.Default.Clear,
-                                            contentDescription = "Clear filter",
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                    }
-                                }
-                                Icon(
-                                    Icons.Default.KeyboardArrowDown,
-                                    contentDescription = "Select date"
-                                )
-                            }
-                        },
-                        readOnly = true,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable {
-                                showDatePicker(
-                                    context = context,
-                                    initialDate = uiState.filterDate ?: Date(),
-                                    onDateSelected = viewModel::onDateFilterChange
-                                )
+                    // Date Filter - FIXED VERSION
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        OutlinedTextField(
+                            value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) } ?: "",
+                            onValueChange = { },
+                            label = { Text("Filter by Visit Date") },
+                            leadingIcon = {
+                                Icon(Icons.Default.DateRange, contentDescription = null)
                             },
-                        placeholder = { Text("Tap to filter by date") },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                        ),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                        singleLine = true
-                    )
+                            trailingIcon = {
+                                Row {
+                                    if (uiState.filterDate != null) {
+                                        IconButton(onClick = viewModel::clearDateFilter) {
+                                            Icon(
+                                                Icons.Default.Clear,
+                                                contentDescription = "Clear filter",
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                    }
+//                                    Icon(
+//                                        Icons.Default.KeyboardArrowDown,
+//                                        contentDescription = "Select date"
+//                                    )
+                                }
+                            },
+                            readOnly = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Tap to filter by date") },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                            ),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            singleLine = true
+                        )
+
+                        // Invisible clickable overlay that captures all touch events
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable {
+                                    showDatePicker(
+                                        context = context,
+                                        initialDate = uiState.filterDate ?: Date(),
+                                        onDateSelected = viewModel::onDateFilterChange
+                                    )
+                                }
+                        )
+                    }
 
                     // Add Patient Button
                     Button(
@@ -138,7 +276,6 @@ fun PatientListingScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Icon(
-//                                Icons.Default.PersonAdd,
                                 Icons.Default.Add,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
@@ -179,7 +316,6 @@ fun PatientListingScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // Patient Statistics Card
