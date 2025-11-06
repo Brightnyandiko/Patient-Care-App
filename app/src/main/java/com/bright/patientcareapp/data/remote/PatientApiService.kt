@@ -32,4 +32,10 @@ interface PatientApiService {
 
     @GET("patients/list")
     suspend fun getPatients(): Response<ApiResponse<List<Any>>>
+
+    @POST("user/signin")
+    suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
+
+    @POST("user/signup")
+    suspend fun signup(@Body request: SignupRequest): Response<AuthResponse>
 }

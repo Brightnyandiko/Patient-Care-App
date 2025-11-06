@@ -2,6 +2,7 @@ package com.bright.patientcareapp.ui.listing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bright.patientcareapp.data.auth.AuthRepository
 import com.bright.patientcareapp.data.model.BmiStatus
 import com.bright.patientcareapp.data.repository.PatientRepository
 import com.bright.patientcareapp.data.repository.VitalsRepository
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PatientListingViewModel @Inject constructor(
     private val patientRepository: PatientRepository,
-    private val vitalsRepository: VitalsRepository
+    private val vitalsRepository: VitalsRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PatientListingUiState())
@@ -113,7 +115,27 @@ class PatientListingViewModel @Inject constructor(
     fun refreshData() {
         loadPatients()
     }
+
+    private val _logoutState = MutableStateFlow(false)
+    val logoutState: StateFlow<Boolean> = _logoutState.asStateFlow()
+
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                authRepository.logout()
+                _logoutState.value = true
+            } catch (e: Exception) {
+                // Handle logout error if needed
+                println("Logout error: ${e.message}")
+            }
+        }
+    }
+
+    fun resetLogoutState() {
+        _logoutState.value = false
+    }
 }
+
 
 /**
  * UI State for Patient Listing Screen

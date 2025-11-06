@@ -92,6 +92,9 @@ dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")  // For API debugging
 
+    // Security for sensitive data (encryption)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
     // Hilt for DI (injects DB/Repo into ViewModels)
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-compiler:2.48")

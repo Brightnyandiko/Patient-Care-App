@@ -33,10 +33,14 @@ import java.util.*
 @Composable
 fun PatientListingScreen(
     onNavigateToRegistration: () -> Unit = {},
+    onLogout: () -> Unit = {},
     viewModel: PatientListingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val logoutState by viewModel.logoutState.collectAsState()
+
+
 
     Column(
         modifier = Modifier
@@ -49,136 +53,25 @@ fun PatientListingScreen(
             subtitle = "Overview of all registered patients and their health status"
         )
 
-        // Filter and Actions Card
-//        HealthCard {
-//            Column(
-//                verticalArrangement = Arrangement.spacedBy(16.dp)
-//            ) {
-//                // Filter Section Title
-//                Row(
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Icon(
-////                        Icons.Default.FilterList,
-//                        Icons.Default.Search,
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.padding(end = 12.dp)
-//                    )
-//                    Text(
-//                        text = "Filter & Actions",
-//                        style = MaterialTheme.typography.titleMedium,
-//                        fontWeight = FontWeight.SemiBold,
-//                        color = MaterialTheme.colorScheme.primary
-//                    )
-//                }
-//
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    // Date Filter
-//                    OutlinedTextField(
-//                        value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) } ?: "",
-//                        onValueChange = { },
-//                        label = { Text("Filter by Visit Date") },
-//                        leadingIcon = {
-//                            Icon(Icons.Default.DateRange, contentDescription = null)
-//                        },
-//                        trailingIcon = {
-//                            Row {
-//                                if (uiState.filterDate != null) {
-//                                    IconButton(onClick = viewModel::clearDateFilter) {
-//                                        Icon(
-//                                            Icons.Default.Clear,
-//                                            contentDescription = "Clear filter",
-//                                            modifier = Modifier.size(20.dp)
-//                                        )
-//                                    }
-//                                }
-//                                Icon(
-//                                    Icons.Default.KeyboardArrowDown,
-//                                    contentDescription = "Select date"
-//                                )
-//                            }
-//                        },
-//                        readOnly = true,
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .clickable {
-//                                showDatePicker(
-//                                    context = context,
-//                                    initialDate = uiState.filterDate ?: Date(),
-//                                    onDateSelected = viewModel::onDateFilterChange
-//                                )
-//                            },
-//                        placeholder = { Text("Tap to filter by date") },
-//                        colors = OutlinedTextFieldDefaults.colors(
-//                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-//                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-//                        ),
-//                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-//                        singleLine = true
-//                    )
-//
-//                    // Add Patient Button
-//                    Button(
-//                        onClick = onNavigateToRegistration,
-//                        modifier = Modifier.height(56.dp),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = MaterialTheme.colorScheme.secondary,
-//                            contentColor = MaterialTheme.colorScheme.onSecondary
-//                        ),
-//                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
-//                    ) {
-//                        Row(
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-//                        ) {
-//                            Icon(
-////                                Icons.Default.PersonAdd,
-//                                Icons.Default.Add,
-//                                contentDescription = null,
-//                                modifier = Modifier.size(18.dp)
-//                            )
-//                            Text(
-//                                text = "Add Patient",
-//                                style = MaterialTheme.typography.labelMedium,
-//                                fontWeight = FontWeight.SemiBold
-//                            )
-//                        }
-//                    }
-//                }
-//
-//                // Filter Results Summary
-//                if (uiState.filterDate != null) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .background(
-//                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-//                                androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-//                            )
-//                            .padding(12.dp)
-//                    ) {
-//                        Icon(
-//                            Icons.Default.Info,
-//                            contentDescription = null,
-//                            tint = MaterialTheme.colorScheme.primary,
-//                            modifier = Modifier.padding(end = 8.dp).size(16.dp)
-//                        )
-//                        Text(
-//                            text = "Showing patients with visits on ${DateUtils.formatForDisplay(uiState.filterDate!!)}",
-//                            style = MaterialTheme.typography.bodySmall,
-//                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-//                        )
-//                    }
-//                }
-//            }
-//        }
+        LaunchedEffect(logoutState) {
+            if (logoutState) {
+                viewModel.resetLogoutState()
+                onLogout() // Navigate to login screen
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            // Modern Page Header with logout
+            PageHeaderWithLogout(
+                title = "Patient Listing",
+                subtitle = "Overview of all registered patients and their health status",
+                onLogout = viewModel::logout
+            )
+        }
 
         HealthCard {
             Column(
@@ -419,6 +312,8 @@ fun PatientListingScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
     }
+
+
 }
 
 @Composable
@@ -757,3 +652,111 @@ private val BmiStatus.displayName: String
         BmiStatus.NORMAL -> "Normal"
         BmiStatus.OVERWEIGHT -> "Overweight"
     }
+
+@Composable
+private fun PageHeaderWithLogout(
+    title: String,
+    subtitle: String,
+    onLogout: () -> Unit
+) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            // Logout Button
+            IconButton(
+                onClick = { showLogoutDialog = true },
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
+                        androidx.compose.foundation.shape.CircleShape
+                    )
+                    .size(48.dp)
+            ) {
+                Icon(
+                    Icons.Default.ExitToApp,
+                    contentDescription = "Logout",
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    // Logout Confirmation Dialog
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.ExitToApp,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Logout",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to logout? You will need to sign in again to access the app.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showLogoutDialog = false
+                        onLogout()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Logout")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+        )
+    }
+}
