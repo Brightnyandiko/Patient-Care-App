@@ -40,6 +40,12 @@ fun PatientListingScreen(
     val context = LocalContext.current
     val logoutState by viewModel.logoutState.collectAsState()
 
+    LaunchedEffect(logoutState) {
+        if (logoutState) {
+            viewModel.resetLogoutState()
+            onLogout() // Navigate to login screen
+        }
+    }
 
 
     Column(
@@ -50,28 +56,10 @@ fun PatientListingScreen(
         // Modern Page Header
         PageHeader(
             title = "Patient Listing",
-            subtitle = "Overview of all registered patients and their health status"
+            subtitle = "Overview of all registered patients and their health status",
+            onLogout = viewModel::logout
         )
 
-        LaunchedEffect(logoutState) {
-            if (logoutState) {
-                viewModel.resetLogoutState()
-                onLogout() // Navigate to login screen
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            // Modern Page Header with logout
-            PageHeaderWithLogout(
-                title = "Patient Listing",
-                subtitle = "Overview of all registered patients and their health status",
-                onLogout = viewModel::logout
-            )
-        }
 
         HealthCard {
             Column(
@@ -576,26 +564,108 @@ private fun EmptyPatientState(
 @Composable
 private fun PageHeader(
     title: String,
-    subtitle: String
+    subtitle: String,
+    onLogout: () -> Unit
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            modifier = Modifier.padding(top = 4.dp)
-        )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            // Logout Button
+            IconButton(
+                onClick = { showLogoutDialog = true },
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
+                        androidx.compose.foundation.shape.CircleShape
+                    )
+                    .size(48.dp)
+            ) {
+                Icon(
+                    Icons.Default.ExitToApp,
+                    contentDescription = "Logout",
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    // Logout Confirmation Dialog
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.ExitToApp,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Logout",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to logout? You will need to sign in again to access the app.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showLogoutDialog = false
+                        onLogout()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Logout")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+        )
     }
 }
 

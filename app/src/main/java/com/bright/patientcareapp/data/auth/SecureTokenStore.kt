@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.getValue
+import androidx.core.content.edit
 
 @Singleton
 class SecureTokenStore @Inject constructor(
@@ -50,7 +51,7 @@ class SecureTokenStore @Inject constructor(
     }
 
     suspend fun clearToken() = withContext(Dispatchers.IO) {
-        sharedPrefs.edit().clear().apply()
+        sharedPrefs.edit { clear() }
     }
 
     suspend fun hasToken(): Boolean = withContext(Dispatchers.IO) {
