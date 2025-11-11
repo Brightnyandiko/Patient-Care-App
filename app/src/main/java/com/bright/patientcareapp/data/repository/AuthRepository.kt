@@ -98,7 +98,9 @@ class AuthRepository @Inject constructor(
             )
 
             if (response.isSuccessful && response.body()?.success == true) {
-                val message = response.body()?.data?.toString() ?: "Account created successfully"
+                val signupResponse = response.body()!!
+                // Use the message from the data object
+                val message = signupResponse.data.message
                 AuthResult.Success(message)
             } else {
                 val errorMsg = response.body()?.message ?: "Signup failed"

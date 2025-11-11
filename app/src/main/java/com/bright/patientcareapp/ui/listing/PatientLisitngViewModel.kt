@@ -2,6 +2,7 @@ package com.bright.patientcareapp.ui.listing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.bright.patientcareapp.data.auth.AuthRepository
 import com.bright.patientcareapp.data.model.BmiStatus
 import com.bright.patientcareapp.data.repository.PatientRepository
@@ -123,6 +124,7 @@ class PatientListingViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 authRepository.logout()
+
                 _logoutState.value = true
             } catch (e: Exception) {
                 // Handle logout error if needed

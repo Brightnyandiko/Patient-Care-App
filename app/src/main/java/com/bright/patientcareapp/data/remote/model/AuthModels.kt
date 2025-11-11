@@ -38,6 +38,19 @@ data class UserData(
     val updatedAt: String
 )
 
+@JsonClass(generateAdapter = true)
+data class SignupResponse(
+    val message: String,
+    val success: Boolean,
+    val code: Int,
+    val data: SignupData
+)
+
+@JsonClass(generateAdapter = true)
+data class SignupData(
+    val proceed: Int,
+    val message: String
+)
 data class AuthToken(
     val token: String,
     val userId: Int,

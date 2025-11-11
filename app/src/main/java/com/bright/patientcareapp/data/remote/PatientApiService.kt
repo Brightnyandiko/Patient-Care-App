@@ -37,5 +37,5 @@ interface PatientApiService {
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
 
     @POST("user/signup")
-    suspend fun signup(@Body request: SignupRequest): Response<AuthResponse>
+    suspend fun signup(@Body request: SignupRequest): Response<SignupResponse>
 }

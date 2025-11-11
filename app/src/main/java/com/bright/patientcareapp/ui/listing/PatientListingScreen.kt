@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -49,10 +48,10 @@ fun PatientListingScreen(
             .padding(16.dp)
     ) {
         // Modern Page Header
-//        PageHeader(
-//            title = "Patient Listing",
-//            subtitle = "Overview of all registered patients and their health status"
-//        )
+        PageHeader(
+            title = "Patient Listing",
+            subtitle = "Overview of all registered patients and their health status"
+        )
 
         LaunchedEffect(logoutState) {
             if (logoutState) {
@@ -72,254 +71,246 @@ fun PatientListingScreen(
                 subtitle = "Overview of all registered patients and their health status",
                 onLogout = viewModel::logout
             )
+        }
 
-
-            HealthCard {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+        HealthCard {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Filter Section Title
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Filter Section Title
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 12.dp)
-                        )
-                        Text(
-                            text = "Filter & Actions",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                    Text(
+                        text = "Filter & Actions",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Date Filter - FIXED VERSION
+                    Box(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        // Date Filter - FIXED VERSION
-                        Box(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            OutlinedTextField(
-                                value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) }
-                                    ?: "",
-                                onValueChange = { },
-                                label = { Text("Filter by Visit Date") },
-                                leadingIcon = {
-                                    Icon(Icons.Default.DateRange, contentDescription = null)
-                                },
-                                trailingIcon = {
-                                    Row {
-                                        if (uiState.filterDate != null) {
-                                            IconButton(onClick = viewModel::clearDateFilter) {
-                                                Icon(
-                                                    Icons.Default.Clear,
-                                                    contentDescription = "Clear filter",
-                                                    modifier = Modifier.size(20.dp)
-                                                )
-                                            }
+                        OutlinedTextField(
+                            value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) } ?: "",
+                            onValueChange = { },
+                            label = { Text("Filter by Visit Date") },
+                            leadingIcon = {
+                                Icon(Icons.Default.DateRange, contentDescription = null)
+                            },
+                            trailingIcon = {
+                                Row {
+                                    if (uiState.filterDate != null) {
+                                        IconButton(onClick = viewModel::clearDateFilter) {
+                                            Icon(
+                                                Icons.Default.Clear,
+                                                contentDescription = "Clear filter",
+                                                modifier = Modifier.size(20.dp)
+                                            )
                                         }
+                                    }
 //                                    Icon(
 //                                        Icons.Default.KeyboardArrowDown,
 //                                        contentDescription = "Select date"
 //                                    )
-                                    }
-                                },
-                                readOnly = true,
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Tap to filter by date") },
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(
-                                        alpha = 0.5f
-                                    )
-                                ),
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                singleLine = true
-                            )
-
-                            // Invisible clickable overlay that captures all touch events
-                            Box(
-                                modifier = Modifier
-                                    .matchParentSize()
-                                    .clickable {
-                                        showDatePicker(
-                                            context = context,
-                                            initialDate = uiState.filterDate ?: Date(),
-                                            onDateSelected = viewModel::onDateFilterChange
-                                        )
-                                    }
-                            )
-                        }
-
-                        // Add Patient Button
-                        Button(
-                            onClick = onNavigateToRegistration,
-                            modifier = Modifier.height(56.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,
-                                contentColor = MaterialTheme.colorScheme.onSecondary
+                                }
+                            },
+                            readOnly = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Tap to filter by date") },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                             ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.Add,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Text(
-                                    text = "Add Patient",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                        }
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            singleLine = true
+                        )
+
+                        // Invisible clickable overlay that captures all touch events
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .clickable {
+                                    showDatePicker(
+                                        context = context,
+                                        initialDate = uiState.filterDate ?: Date(),
+                                        onDateSelected = viewModel::onDateFilterChange
+                                    )
+                                }
+                        )
                     }
 
-                    // Filter Results Summary
-                    if (uiState.filterDate != null) {
+                    // Add Patient Button
+                    Button(
+                        onClick = onNavigateToRegistration,
+                        modifier = Modifier.height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                    ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                                    androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-                                )
-                                .padding(12.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Icon(
-                                Icons.Default.Info,
+                                Icons.Default.Add,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(end = 8.dp).size(16.dp)
+                                modifier = Modifier.size(18.dp)
                             )
                             Text(
-                                text = "Showing patients with visits on ${
-                                    DateUtils.formatForDisplay(
-                                        uiState.filterDate!!
-                                    )
-                                }",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                text = "Add Patient",
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
 
-            // Patient Statistics Card
-            PatientStatsCard(
-                totalPatients = uiState.patients.size,
-                filteredCount = if (uiState.filterDate != null) uiState.patients.size else null
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Patient List Card
-            HealthCard {
-                Column {
-                    // List Header
+                // Filter Results Summary
+                if (uiState.filterDate != null) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp)
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                                androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                            )
+                            .padding(12.dp)
                     ) {
                         Icon(
-//                        Icons.Default.People,
-                            Icons.Default.Person,
+                            Icons.Default.Info,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 12.dp)
+                            modifier = Modifier.padding(end = 8.dp).size(16.dp)
                         )
                         Text(
-                            text = "Patient Directory",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary
+                            text = "Showing patients with visits on ${DateUtils.formatForDisplay(uiState.filterDate!!)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                         )
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-                        Spacer(modifier = Modifier.weight(1f))
+        // Patient Statistics Card
+        PatientStatsCard(
+            totalPatients = uiState.patients.size,
+            filteredCount = if (uiState.filterDate != null) uiState.patients.size else null
+        )
 
-                        // Refresh Button
-                        IconButton(
-                            onClick = viewModel::refreshData,
-                            modifier = Modifier.size(32.dp)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Patient List Card
+        HealthCard {
+            Column {
+                // List Header
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Icon(
+//                        Icons.Default.People,
+                        Icons.Default.Person,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                    Text(
+                        text = "Patient Directory",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Refresh Button
+                    IconButton(
+                        onClick = viewModel::refreshData,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Refresh,
+                            contentDescription = "Refresh",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                if (uiState.isLoading) {
+                    // Loading State
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Refresh,
-                                contentDescription = "Refresh",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Loading patient data...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                         }
                     }
+                } else if (uiState.patients.isEmpty()) {
+                    // Empty State
+                    EmptyPatientState(
+                        isFiltered = uiState.filterDate != null,
+                        onAddPatient = onNavigateToRegistration,
+                        onClearFilter = viewModel::clearDateFilter
+                    )
+                } else {
+                    // Table Header
+                    PatientTableHeader()
 
-                    if (uiState.isLoading) {
-                        // Loading State
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                CircularProgressIndicator(
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    text = "Loading patient data...",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                                )
-                            }
-                        }
-                    } else if (uiState.patients.isEmpty()) {
-                        // Empty State
-                        EmptyPatientState(
-                            isFiltered = uiState.filterDate != null,
-                            onAddPatient = onNavigateToRegistration,
-                            onClearFilter = viewModel::clearDateFilter
-                        )
-                    } else {
-                        // Table Header
-                        PatientTableHeader()
+                    Divider(
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
 
-                        Divider(
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-
-                        // Patient List
-                        LazyColumn(
-                            modifier = Modifier.heightIn(max = 400.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            items(uiState.patients) { patient ->
-                                PatientListItem(patient = patient)
-                            }
+                    // Patient List
+                    LazyColumn(
+                        modifier = Modifier.heightIn(max = 400.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        items(uiState.patients) { patient ->
+                            PatientListItem(patient = patient)
                         }
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 
 

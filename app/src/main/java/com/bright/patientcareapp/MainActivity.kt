@@ -170,6 +170,11 @@ fun PatientCareApp() {
             PatientListingScreen(
                 onNavigateToRegistration = {
                     navController.navigate("registration")
+                },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             )
         }
