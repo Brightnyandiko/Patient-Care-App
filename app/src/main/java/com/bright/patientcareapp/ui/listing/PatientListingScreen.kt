@@ -108,7 +108,6 @@ fun PatientListingScreen(
                                 value = uiState.filterDate?.let { DateUtils.formatForDisplay(it) }
                                     ?: "",
                                 onValueChange = { },
-                                label = { Text("Filter by Visit Date") },
                                 leadingIcon = {
                                     Icon(Icons.Default.DateRange, contentDescription = null)
                                 },
